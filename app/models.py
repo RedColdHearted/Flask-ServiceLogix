@@ -1,12 +1,8 @@
 from datetime import datetime
 import uuid
-from enum import Enum
-from app import db
 
-class RepairRequestStatus(Enum):
-    NEW = "Новая заявка"
-    IN_PROGRESS = "В процессе ремонта"
-    COMPLETED = "Завершена"
+from app import db
+from schemas import RepairRequestStatus
 
 
 class RepairRequest(db.Model):

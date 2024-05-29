@@ -29,4 +29,4 @@ class RepairRequestResponse(BaseModel):
     status: RepairRequestStatus
 
     class Config:
-        orm_mode = True
+        from_attributes = True

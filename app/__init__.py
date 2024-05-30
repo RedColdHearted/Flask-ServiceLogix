@@ -1,9 +1,16 @@
 from flask import Flask
+from flask_admin import Admin
+from flask_login import LoginManager
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_bcrypt import Bcrypt
 
 db = SQLAlchemy()
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
+
+
 def create_app():
     app = Flask(__name__, template_folder='templates', static_folder='static')
 
@@ -11,8 +18,10 @@ def create_app():
     app.config.from_object('config.Config')
     db.init_app(app)
 
-    migrate = Migrate(app, db)
+    login_manager.init_app(app)
+    bcrypt = Bcrypt(app)
 
+    migrate = Migrate(app, db)
 
     with app.app_context():
         # Регистрация блюпринтов

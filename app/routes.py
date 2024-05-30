@@ -13,7 +13,7 @@ def register_routes(app, db):
     main.add_url_rule('/', 'home', home)
     main.add_url_rule('/login', 'login', login)
     main.add_url_rule('/logout', 'logout', logout)
-    main.add_url_rule('/register', 'register', register)
+    main.add_url_rule('/register', 'register', register, methods=['GET', 'POST'])
 
     admin = Admin(app, name='Admin Panel', template_mode='bootstrap3')
     admin.add_view(ModelView(RepairWorker, db.session))

@@ -13,6 +13,7 @@ class RepairWorker(UserMixin, db.Model):
     __tablename__ = 'repair_workers'
     id = db.Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
     username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     repair_requests = db.relationship('RepairRequest', back_populates='current_master')
 

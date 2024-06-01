@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
-from .models import RepairWorker
+from .models import User
 
 
 class LoginForm(FlaskForm):
@@ -19,11 +19,11 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Sign Up')
 
     def validate_username(self, username):
-        user = RepairWorker.query.filter_by(username=username.data).first()
+        user = User.query.filter_by(username=username.data).first()
         if user:
             raise ValidationError('That username is already taken. Please choose a different one.')
 
     def validate_email(self, email):
-        user = RepairWorker.query.filter_by(email=email.data).first()
+        user = User.query.filter_by(email=email.data).first()
         if user:
             raise ValidationError('That email is already taken. Please choose a different one.')

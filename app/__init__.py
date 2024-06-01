@@ -6,6 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 
+from app.admin import create_admin
+
 db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
@@ -32,5 +34,8 @@ def create_app():
         # Дополнительная инициализация, если требуется
         from .routes import register_routes
         register_routes(app, db)
+
+
+    create_admin(app)
 
     return app

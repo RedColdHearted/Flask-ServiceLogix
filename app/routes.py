@@ -1,7 +1,5 @@
 from flask import Blueprint
-from werkzeug.security import generate_password_hash
 
-from app.models import RepairWorker
 from .main.views import home, login, register, logout
 
 main = Blueprint('main', __name__)

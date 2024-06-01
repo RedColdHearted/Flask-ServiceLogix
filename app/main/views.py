@@ -36,7 +36,7 @@ def login():
         user = RepairWorker.query.filter_by(username=form.username.data).first()
         if user and user.check_password(form.password.data):
             login_user(user)
-            return redirect(url_for('main.dashboard'))
+            return redirect(url_for('main.home'))
         else:
             flash('Invalid username or password.')
     return render_template('registration/login.html', form=form)
@@ -45,4 +45,4 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('main.home'))

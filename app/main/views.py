@@ -2,10 +2,18 @@ from flask import render_template, flash, redirect, url_for
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash
 
-from app.models import RepairWorker
+from app.models import RepairWorker, Manager
 from app.forms import RegistrationForm, LoginForm
 from app import db
 
+
+def find_user_by_username(username):
+    models = [RepairWorker, Manager]  # Добавь сюда все модели, с которыми ты работаешь
+    for model in models:
+        user = model.query.filter_by(username=username).first()
+        if user:
+            return user
+    return None
 
 def home():
     return render_template('home/home.html')
@@ -33,7 +41,7 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
-        user = RepairWorker.query.filter_by(username=form.username.data).first()
+        user = find_user_by_username(form.username.data)
         if user and user.check_password(form.password.data):
             login_user(user)
             return redirect(url_for('main.home'))

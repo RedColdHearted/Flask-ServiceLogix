@@ -21,7 +21,7 @@ class MyModelView(ModelView):
 
 
 def create_admin(app):
-    admin = Admin(app, index_view=MyAdminIndexView())
+    admin = Admin(app, index_view=MyAdminIndexView(), template_mode='bootstrap4')
     from .models import db, RepairWorker, Manager
     admin.add_view(MyModelView(RepairWorker, db.session))
     admin.add_view(MyModelView(Manager, db.session))

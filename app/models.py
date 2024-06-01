@@ -9,19 +9,7 @@ from app import db, login_manager
 from .schemas import RepairRequestStatus
 
 
-class RepairWorker(UserMixin, db.Model):
-    __tablename__ = 'repair_workers'
-    id = db.Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
-    is_admin = db.Column(db.Boolean, default=False, nullable=False)
-
-    repair_requests = db.relationship('RepairRequest', back_populates='current_master')
-
-    def __repr__(self):
-        return f'<RepairWorker {self.username}>'
-
+class MyUserMixin(UserMixin):
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -29,10 +17,36 @@ class RepairWorker(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
+class RepairWorker(MyUserMixin, db.Model):
+    __tablename__ = 'repair_workers'
+    id = db.Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False, nullable=True)
+
+    repair_requests = db.relationship('RepairRequest', back_populates='current_master')
+
+    def __repr__(self):
+        return f'<RepairWorker {self.username}>'
+
+
+class Manager(MyUserMixin, db.Model):
+    __tablename__ = 'managers'
+    id = db.Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    is_admin = db.Column(db.Boolean, default=True, nullable=False)
+
 @login_manager.user_loader
 def load_user(user_id):
     return RepairWorker.query.get(user_id)
 
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Manager.query.get(user_id)
 
 class RepairRequest(db.Model):
     __tablename__ = 'repair_requests'

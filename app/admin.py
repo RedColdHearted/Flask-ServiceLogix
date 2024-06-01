@@ -22,6 +22,7 @@ class MyModelView(ModelView):
 
 def create_admin(app):
     admin = Admin(app, index_view=MyAdminIndexView())
-    from .models import db, RepairWorker
+    from .models import db, RepairWorker, Manager
     admin.add_view(MyModelView(RepairWorker, db.session))
+    admin.add_view(MyModelView(Manager, db.session))
     return admin

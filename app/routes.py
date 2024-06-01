@@ -1,11 +1,7 @@
-from flask import request, render_template, jsonify, Blueprint
-from flask import request, jsonify
-from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
+from flask import Blueprint
 from werkzeug.security import generate_password_hash
 
-from app.models import RepairRequest, RepairRequestStatus, RepairWorker
-from app.schemas import RepairRequestCreate, RepairRequestResponse, RepairRequestUpdateStatus
+from app.models import RepairWorker
 from .main.views import home, login, register, logout
 
 main = Blueprint('main', __name__)

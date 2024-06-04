@@ -49,5 +49,6 @@ def logout():
 
 @login_required
 def profile():
+    # TODO: переделать логику под одну страницу
     profile_template = 'profile/' + current_user.template_name + '.html'
     return render_template(profile_template)

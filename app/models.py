@@ -18,7 +18,6 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False, nullable=True)
     is_manager = db.Column(db.Boolean, default=False, nullable=True)
     is_repairman = db.Column(db.Boolean, default=False, nullable=True)
-    template_name = db.Column(db.String(80), nullable=False)
 
     repair_requests = db.relationship('RepairRequest', back_populates='current_master')
 
@@ -50,6 +49,8 @@ class RepairRequest(db.Model):
     status = db.Column(db.Enum(RepairRequestStatus), default=RepairRequestStatus.NEW, nullable=False)
     current_master_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=True)
     master_comment = db.Column(db.Text, nullable=True)
+    is_active = db.Column(db.Boolean, default=False, nullable=True)
+    complete_at = db.Column(db.DateTime, default=None, nullable=True)
 
     current_master = db.relationship('User', back_populates='repair_requests')
 

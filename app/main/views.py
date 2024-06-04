@@ -13,12 +13,12 @@ def home():
 
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('main.profile'))
 
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data)
-        user = User(username=form.username.data, email=form.email.data, password_hash=hashed_password)
+        user = User(username=form.username.data, email=form.email.data, password_hash=hashed_password, is_repairmain=True, template_name='perairman-profile')
         db.session.add(user)
         db.session.commit()
         flash('Your account has been created! You are now able to log in', 'success')
@@ -29,8 +29,7 @@ def register():
 
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
-
+        return redirect(url_for('main.profile'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
@@ -46,3 +45,9 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('main.home'))
+
+
+@login_required
+def profile():
+    profile_template = 'profile/' + current_user.template_name + '.html'
+    return render_template(profile_template)

@@ -13,7 +13,7 @@ def register_cli(app, db):
     def create_admin():
         """Создание админ пользователя"""
         username, email, hashed_password = get_info()
-        admin = User(username=username, email=email, password_hash=hashed_password, is_admin=True, template_name='admin-profile')
+        admin = User(username=username, email=email, password_hash=hashed_password, is_admin=True)
 
         db.session.add(admin)
         db.session.commit()
@@ -22,7 +22,7 @@ def register_cli(app, db):
     def create_manager():
         """Создание менеджера"""
         username, email, hashed_password = get_info()
-        admin = User(username=username, email=email, password_hash=hashed_password, is_manager=True, template_name='manager-profile')
+        admin = User(username=username, email=email, password_hash=hashed_password, is_manager=True)
 
         db.session.add(admin)
         db.session.commit()
@@ -31,7 +31,7 @@ def register_cli(app, db):
     def create_repairman():
         """Создание ремонтника"""
         username, email, hashed_password = get_info()
-        admin = User(username=username, email=email, password_hash=hashed_password, is_repairmain=True, template_name='repairman-profile')
+        admin = User(username=username, email=email, password_hash=hashed_password, is_repairmain=True)
 
         db.session.add(admin)
         db.session.commit()

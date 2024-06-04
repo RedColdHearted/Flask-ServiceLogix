@@ -27,8 +27,8 @@ def create_app():
     with app.app_context():
         # Регистрация блюпринтов
 
-        from .main.errors import errors as main_blueprint
-        app.register_blueprint(main_blueprint)
+        from .main.errors import errors as errors_blueprint
+        app.register_blueprint(errors_blueprint)
 
         # Дополнительная инициализация, если требуется
         from .routes import register_routes

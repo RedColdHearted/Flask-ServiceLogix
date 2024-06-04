@@ -18,7 +18,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data)
-        user = User(username=form.username.data, email=form.email.data, password_hash=hashed_password, is_repairmain=True, template_name='perairman-profile')
+        user = User(username=form.username.data, email=form.email.data, password_hash=hashed_password, is_repairmain=True)
         db.session.add(user)
         db.session.commit()
         flash('Your account has been created! You are now able to log in', 'success')
@@ -35,7 +35,7 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user and user.check_password(form.password.data):
             login_user(user)
-            return redirect(url_for('main.home'))
+            return redirect(url_for('main.profile'))
         else:
             flash('Invalid username or password.')
     return render_template('registration/login.html', form=form)
@@ -49,6 +49,4 @@ def logout():
 
 @login_required
 def profile():
-    # TODO: переделать логику под одну страницу
-    profile_template = 'profile/' + current_user.template_name + '.html'
-    return render_template(profile_template)
+    return render_template('profile/profile.html')

@@ -17,6 +17,8 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=True)
     is_manager = db.Column(db.Boolean, default=False, nullable=True)
+    is_repairman = db.Column(db.Boolean, default=False, nullable=True)
+    template_name = db.Column(db.String(80), nullable=False)
 
     repair_requests = db.relationship('RepairRequest', back_populates='current_master')
 

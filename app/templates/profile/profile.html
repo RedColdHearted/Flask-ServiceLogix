@@ -89,8 +89,8 @@
                             <span>Статус: {{ request.status }}</span>
                             <span class="status">Дата создания: {{ request.request_date }}</span>
                             <div>
-                                <button class="btn btn-dark btn-sm toggle-light">Подробнее</button>
-                                <button class="btn btn-primary btn-sm toggle-light">Изменить</button>
+                                <a href="{{ url_for('main.info_repair_request', pk=request.id) }}" class="btn btn-dark btn-sm toggle-light">Подробнее</a>
+                                <a href="{{ url_for('main.edit_repair_request', pk=request.id) }}" class="btn btn-primary btn-sm toggle-light">Изменить</a>
                             </div>
                         </li>
                         {% endfor %}

@@ -12,16 +12,24 @@ class MyAdminIndexView(AdminIndexView):
         abort(404)
 
 
-class MyModelView(ModelView):
+class UserModelView(ModelView):
+    column_list = ('id', 'username', 'email', 'password_hash', 'is_admin', 'is_manager', 'is_repairman',)  # Колонки, которые будут отображены
+    form_columns = ['id', 'username', 'email', 'password_hash', 'is_admin', 'is_manager', 'is_repairman']  # Колонки, доступные для редактирования
+
     def is_accessible(self):
         return current_user.is_authenticated and current_user.is_admin
 
     def inaccessible_callback(self, name, **kwargs):
         abort(404)
 
+class RequestModelView(ModelView):
+    column_list = ('id', 'request_date', 'device_type', 'device_model', 'issue_description', 'client_name', 'client_phone', 'status', 'current_master_id', 'master_comment', 'is_active', 'complete_at')  # Колонки, которые будут отображены
+    form_columns = [ 'request_date', 'device_type', 'device_model', 'issue_description', 'client_name', 'client_phone', 'status', 'current_master_id', 'master_comment', 'is_active', 'complete_at']  # Колонки, доступные для редактирования
+
 
 def create_admin(app):
     admin = Admin(app, index_view=MyAdminIndexView(), template_mode='bootstrap4')
-    from .models import db, User
-    admin.add_view(MyModelView(User, db.session))
+    from .models import db, User, RepairRequest
+    admin.add_view(UserModelView(User, db.session))
+    admin.add_view(RequestModelView(RepairRequest, db.session))
     return admin

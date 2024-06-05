@@ -31,7 +31,7 @@ def register_cli(app, db):
     def create_repairman():
         """Создание ремонтника"""
         username, email, hashed_password = get_info()
-        admin = User(username=username, email=email, password_hash=hashed_password, is_repairmain=True)
+        admin = User(username=username, email=email, password_hash=hashed_password, is_repairman=True)
 
         db.session.add(admin)
         db.session.commit()

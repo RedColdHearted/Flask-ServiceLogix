@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from flask import render_template, flash, redirect, url_for
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash
 
-from app.models import User
-from app.forms import RegistrationForm, LoginForm
+from app.models import User, RepairRequest
+from app.forms import RegistrationForm, LoginForm, RepairRequestForm
 from app import db
 
 
@@ -49,4 +51,35 @@ def logout():
 
 @login_required
 def profile():
-    return render_template('profile/profile.html')
+    requests = RepairRequest.query.all()
+    active_requests = [item for item in filter(lambda x: x.is_active, requests)]
+    repairmans = User.query.filter_by(is_repairman=True).all()
+    return render_template('profile/profile.html',
+                           active_requests=active_requests,
+                           history=requests,
+                           repairmans=repairmans,
+                           create_request_form=RepairRequestForm(),
+                           )
+
+@login_required
+def create_repair_request():
+    form = RepairRequestForm()
+    if form.validate_on_submit():
+        request_date = datetime.utcnow()
+        request_date = request_date.replace(microsecond=0)
+        repair_request = RepairRequest(
+            request_date=request_date,
+            device_type=form.device_type.data,
+            device_model=form.device_model.data,
+            issue_description=form.issue_description.data,
+            client_name=form.client_name.data,
+            client_phone=form.client_phone.data,
+            is_active=form.is_active.data,
+            current_master_id=current_user.id  # Берем из текущего пользователя
+        )
+        db.session.add(repair_request)
+        db.session.commit()
+        flash('Запрос на ремонт создан', 'success')
+        return redirect(url_for('main.profile'))
+
+    return render_template('profile/profile.html', form=form)

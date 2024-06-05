@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+from wtforms import StringField, TextAreaField, PasswordField, SubmitField, BooleanField
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length
 from .models import User
 
 
@@ -27,3 +27,11 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user:
             raise ValidationError('That email is already taken. Please choose a different one.')
+
+class RepairRequestForm(FlaskForm):
+    device_type = StringField('Тип устройства', validators=[DataRequired(), Length(max=50)])
+    device_model = StringField('Модель устройства', validators=[DataRequired(), Length(max=50)])
+    issue_description = TextAreaField('Описание проблемы', validators=[DataRequired()])
+    client_name = StringField('Имя клиента', validators=[DataRequired(), Length(max=100)])
+    client_phone = StringField('Телефон клиента', validators=[DataRequired(), Length(max=20)])
+    is_active = BooleanField('Активный запрос')

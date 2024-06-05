@@ -5,7 +5,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash
 
 from app.models import User, RepairRequest
-from app.forms import RegistrationForm, LoginForm, RepairRequestForm
+from app.forms import RegistrationForm, LoginForm, RepairRequestForm, EditRepairRequestForm
 from app import db
 
 
@@ -83,3 +83,31 @@ def create_repair_request():
         return redirect(url_for('main.profile'))
 
     return render_template('profile/profile.html', form=form)
+
+
+@login_required
+def edit_repair_request(pk):
+    repair_request = RepairRequest.query.get_or_404(str(pk))
+    form = EditRepairRequestForm(obj=repair_request)
+
+    if form.validate_on_submit():
+        repair_request.device_type = form.device_type.data
+        repair_request.device_model = form.device_model.data
+        repair_request.issue_description = form.issue_description.data
+        repair_request.client_name = form.client_name.data
+        repair_request.client_phone = form.client_phone.data
+        repair_request.status = form.status.data
+        repair_request.master_comment = form.master_comment.data
+        repair_request.is_active = form.is_active.data
+
+        db.session.commit()
+        return redirect(url_for('main.profile'))
+
+    return render_template('request/request_edit.html', form=form)
+
+
+@login_required
+def info_repair_request(pk):
+    request = RepairRequest.query.get_or_404(str(pk))
+    master = User.query.get_or_404(str(request.current_master_id))
+    return render_template('request/request_ifno.html', request=request, master=master)

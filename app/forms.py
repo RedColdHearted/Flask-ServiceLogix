@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, TextAreaField, PasswordField, SubmitField, BooleanField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length
 from .models import User
+from .schemas import RepairRequestStatus
 
 
 class LoginForm(FlaskForm):
@@ -34,4 +35,14 @@ class RepairRequestForm(FlaskForm):
     issue_description = TextAreaField('Описание проблемы', validators=[DataRequired()])
     client_name = StringField('Имя клиента', validators=[DataRequired(), Length(max=100)])
     client_phone = StringField('Телефон клиента', validators=[DataRequired(), Length(max=20)])
+    is_active = BooleanField('Активный запрос')
+
+class EditRepairRequestForm(FlaskForm):
+    device_type = StringField('Тип устройства', validators=[DataRequired(), Length(max=50)])
+    device_model = StringField('Модель устройства', validators=[DataRequired(), Length(max=50)])
+    issue_description = TextAreaField('Описание проблемы', validators=[DataRequired()])
+    client_name = StringField('Имя клиента', validators=[DataRequired(), Length(max=100)])
+    client_phone = StringField('Телефон клиента', validators=[DataRequired(), Length(max=20)])
+    status = SelectField('Статус', choices=[(status.name, status.value) for status in RepairRequestStatus])
+    master_comment = TextAreaField('Комментарий мастера', validators=[Length(max=200)])
     is_active = BooleanField('Активный запрос')

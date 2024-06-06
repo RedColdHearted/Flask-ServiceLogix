@@ -35,3 +35,16 @@ def register_cli(app, db):
 
         db.session.add(admin)
         db.session.commit()
+
+    @app.cli.command('show-all-users')
+    def show_all_users():
+        users = User.query.all()
+        headers = ["Username", "Email", "Is Admin", "Is Manager", "Is Repairman"]
+        data = [(user.username, user.email, user.is_admin, user.is_manager, user.is_repairman) for user in users]
+        column_widths = [max(len(str(item)) for item in column) for column in zip(*data)]
+        column_widths = [max(len(header), width) for header, width in zip(headers, column_widths)]
+        format_str = " | ".join([f"{{:<{width}}}" for width in column_widths])
+        print('\n', format_str.format(*headers))
+        print('-' * (sum(column_widths) + 3 * (len(headers) - 1)))
+        for row in data:
+            print(format_str.format(*row))

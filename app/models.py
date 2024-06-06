@@ -49,7 +49,7 @@ class RepairRequest(db.Model):
     status = db.Column(db.Enum(RepairRequestStatus), default=RepairRequestStatus.NEW, nullable=False)
     current_master_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=True)
     master_comment = db.Column(db.Text, nullable=True)
-    is_active = db.Column(db.Boolean, default=False, nullable=True)
+    is_active = db.Column(db.Boolean, default=True, nullable=True)
     complete_at = db.Column(db.DateTime, default=None, nullable=True)
 
     current_master = db.relationship('User', back_populates='repair_requests')

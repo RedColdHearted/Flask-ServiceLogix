@@ -22,7 +22,7 @@
             <li class="list-group-item"><strong>Текущий мастер:</strong> {{ master.username }}</li>
             <li class="list-group-item"><strong>Комментарий мастера:</strong> {{ request.master_comment }}</li>
             <li class="list-group-item"><strong>Активен:</strong> {{ 'Да' if request.is_active else 'Нет' }}</li>
-            <li class="list-group-item"><strong>Завершено:</strong> {{ request.complete_at.strftime('%Y-%m-%d %H:%M:%S') if request.complete_at else 'Н/Д' }}</li>
+            <li class="list-group-item"><strong>Завершено:</strong> {{ request.complete_at.strftime('%Y-%m-%d %H:%M:%S') if request.complete_at else 'Нет' }}</li>
         </ul>
         <div style="margin-top: 2%">
         <a href="{{ url_for('main.profile') }}" class="btn btn-secondary">Назад</a>

@@ -1,12 +1,18 @@
 from datetime import datetime
 
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash
 
 from app.models import User, RepairRequest
 from app.forms import RegistrationForm, LoginForm, RepairRequestForm, EditRepairRequestForm, SearchRepairRequestForm
 from app import db
+
+
+def get_errors(form):
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(f"Ошибка в поле {getattr(form, field).label.text}: {error}", 'danger')
 
 
 def home():
@@ -58,13 +64,14 @@ def profile():
                            active_requests=active_requests,
                            history=requests,
                            repairmans=repairmans,
-                           create_request_form=RepairRequestForm(),
+                           create_request_form=RepairRequestForm(current_user),
                            search_request_form=SearchRepairRequestForm(),
                            )
 
+
 @login_required
 def create_repair_request():
-    form = RepairRequestForm()
+    form = RepairRequestForm(current_user)
     if form.validate_on_submit():
         request_date = datetime.utcnow()
         request_date = request_date.replace(microsecond=0)
@@ -75,15 +82,16 @@ def create_repair_request():
             issue_description=form.issue_description.data,
             client_name=form.client_name.data,
             client_phone=form.client_phone.data,
-            is_active=form.is_active.data,
-            current_master_id=current_user.id  # Берем из текущего пользователя
+            status=form.status.data,
+            # is_active=form.is_active.data,
+            current_master_id=form.current_master.data
         )
         db.session.add(repair_request)
         db.session.commit()
         flash('Запрос на ремонт создан', 'success')
         return redirect(url_for('main.profile'))
 
-    flash('Ошибка заполения формы', 'danger')
+    get_errors(form)
     return redirect(url_for('main.profile'))
 
 
@@ -104,7 +112,7 @@ def edit_repair_request(pk):
 
         db.session.commit()
         return redirect(url_for('main.profile'))
-    flash('Ошибка заполения формы', 'danger')
+    get_errors(form)
     return render_template('request/request_edit.html', form=form)
 
 
@@ -123,7 +131,7 @@ def search_results():
         search_term = f"%{phone}%"
         results = RepairRequest.query.filter(RepairRequest.client_phone.like(search_term)).all()
         if results:
-            return render_template('profile/search_results.html', contacts=results, phone=phone)
+            return render_template('profile/search_results.html', results=results, phone=phone)
         else:
             flash(f'Контакт с номером телефона {phone} не найден.', 'danger')
             return redirect(url_for('main.profile'))

@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash
 
 from app.models import User, RepairRequest
-from app.forms import RegistrationForm, LoginForm, RepairRequestForm, EditRepairRequestForm
+from app.forms import RegistrationForm, LoginForm, RepairRequestForm, EditRepairRequestForm, SearchRepairRequestForm
 from app import db
 
 
@@ -59,6 +59,7 @@ def profile():
                            history=requests,
                            repairmans=repairmans,
                            create_request_form=RepairRequestForm(),
+                           search_request_form=SearchRepairRequestForm(),
                            )
 
 @login_required
@@ -82,7 +83,8 @@ def create_repair_request():
         flash('Запрос на ремонт создан', 'success')
         return redirect(url_for('main.profile'))
 
-    return render_template('profile/profile.html', form=form)
+    flash('Ошибка заполения формы', 'danger')
+    return redirect(url_for('main.profile'))
 
 
 @login_required
@@ -102,7 +104,7 @@ def edit_repair_request(pk):
 
         db.session.commit()
         return redirect(url_for('main.profile'))
-
+    flash('Ошибка заполения формы', 'danger')
     return render_template('request/request_edit.html', form=form)
 
 
@@ -111,3 +113,19 @@ def info_repair_request(pk):
     request = RepairRequest.query.get_or_404(str(pk))
     master = User.query.get_or_404(str(request.current_master_id))
     return render_template('request/request_ifno.html', request=request, master=master)
+
+
+@login_required
+def search_results():
+    form = SearchRepairRequestForm()
+    if form.validate_on_submit():
+        phone = form.client_phone.data
+        search_term = f"%{phone}%"
+        results = RepairRequest.query.filter(RepairRequest.client_phone.like(search_term)).all()
+        if results:
+            return render_template('profile/search_results.html', contacts=results, phone=phone)
+        else:
+            flash(f'Контакт с номером телефона {phone} не найден.', 'danger')
+            return redirect(url_for('main.profile'))
+    flash(f'Неверный формат номера телефона', 'danger')
+    return redirect(url_for('main.profile'))

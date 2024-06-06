@@ -5,7 +5,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash
 
 from app.models import User, RepairRequest
-from app.forms import RegistrationForm, LoginForm, RepairRequestForm, EditRepairRequestForm, SearchRepairRequestForm
+from app.forms import RegistrationForm, LoginForm, RepairRequestForm, SearchRepairRequestForm
 from app import db
 
 
@@ -98,7 +98,7 @@ def create_repair_request():
 @login_required
 def edit_repair_request(pk):
     repair_request = RepairRequest.query.get_or_404(str(pk))
-    form = EditRepairRequestForm(obj=repair_request)
+    form = RepairRequestForm(current_user, obj=repair_request)
 
     if form.validate_on_submit():
         repair_request.device_type = form.device_type.data

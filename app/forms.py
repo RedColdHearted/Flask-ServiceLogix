@@ -42,6 +42,7 @@ class RepairRequestForm(FlaskForm, PhoneFormMixin):
     issue_description = TextAreaField('Описание проблемы', validators=[DataRequired()])
     client_name = StringField('Имя клиента', validators=[DataRequired(), Length(max=100)])
     status = SelectField('Статус', choices=[(status.name, status.value) for status in RepairRequestStatus])
+    master_comment = TextAreaField('Комментарий мастера', validators=[Length(max=200)])
     is_active = BooleanField('Активный запрос')
 
     current_master = SelectField('Мастер', coerce=str)  # добавленное поле для выбора мастера
@@ -59,16 +60,6 @@ class RepairRequestForm(FlaskForm, PhoneFormMixin):
             self.current_master.choices = [(current_user.id, current_user.username)]
             self.current_master.data = current_user.id  # Значение по умолчанию
             self.current_master.render_kw = {'disabled': 'disabled'}  # Отключаем поле для редактирования
-
-
-class EditRepairRequestForm(FlaskForm, PhoneFormMixin):
-    device_type = StringField('Тип устройства', validators=[DataRequired(), Length(max=50)])
-    device_model = StringField('Модель устройства', validators=[DataRequired(), Length(max=50)])
-    issue_description = TextAreaField('Описание проблемы', validators=[DataRequired()])
-    client_name = StringField('Имя клиента', validators=[DataRequired(), Length(max=100)])
-    status = SelectField('Статус', choices=[(status.name, status.value) for status in RepairRequestStatus])
-    master_comment = TextAreaField('Комментарий мастера', validators=[Length(max=200)])
-    is_active = BooleanField('Активный запрос')
 
 
 class SearchRepairRequestForm(FlaskForm, PhoneFormMixin):

@@ -3,4 +3,3 @@ venv
 instance
 migrations
 __pycache__
-.gitattributes

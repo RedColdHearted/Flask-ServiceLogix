@@ -164,23 +164,18 @@
 
                 <!-- Список светофоров -->
                 <ul class="list-group">
-                    {% if traffic_controllers %}
-                        <!-- Кнопки для управления освещением -->
-                    <div class="d-flex justify-content-between my-3">
-
-                        <button class="btn btn-success">Включить все</button>
-                        <button class="btn btn-danger">Выключить все</button>
-                    </div>
-                    <!-- Пример элемента светофора -->
-                        {% for traffic_controller in traffic_controllers %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Светофор 1 <span class="status">{{ traffic_controller.status }}</span>
-                            <div>
-                                <button class="btn btn-danger btn-sm toggle-status">Красный</button>
-                                <button class="btn btn-warning btn-sm toggle-status">Желтый</button>
-                                <button class="btn btn-success btn-sm toggle-status">Зеленый</button>
-                            </div>
-                        </li>
+                    {% if history %}
+                    <!-- история -->
+                        {% for item in history %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center" style="">
+                                <span style="font-size: 10px; color: gray;">{{ item.id }}</span>
+                                <span>Тип: {{ item.device_type }}</span>
+                                <span>Статус: {{ item.status }}</span>
+                                <span class="status">Дата создания: {{ item.request_date }}</span>
+                                <div>
+                                    <a href="{{ url_for('main.delete_repair_request', pk=item.id) }}" class="btn btn-danger btn-sm toggle-light">Удалить</a>
+                                </div>
+                            </li>
                         {% endfor %}
                     {% else %}
                         <div style="margin: 10% auto">

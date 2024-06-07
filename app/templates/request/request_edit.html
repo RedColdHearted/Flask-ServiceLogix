@@ -31,6 +31,10 @@
                 {{ form.issue_description(class="form-control", id="issue_description", rows=5) }}
             </div>
             <div class="mb-3">
+                {{ form.current_master.label(class_="form-label") }}
+                {{ form.current_master(class_="form-select") }}
+            </div>
+            <div class="mb-3">
                 <label for="client_name" class="form-label">{{ form.client_name.label }}</label>
                 {{ form.client_name(class="form-control", id="client_name") }}
             </div>
@@ -46,10 +50,10 @@
                 <label for="master_comment" class="form-label">{{ form.master_comment.label }}</label>
                 {{ form.master_comment(class="form-control", id="master_comment", rows=5) }}
             </div>
-            <div class="form-check mb-3">
-                {{ form.is_active(class="form-check-input", id="is_active") }}
-                <label class="form-check-label" for="is_active">{{ form.is_active.label }}</label>
-            </div>
+{#            <div class="form-check mb-3">#}
+{#                {{ form.is_active(class="form-check-input", id="is_active") }}#}
+{#                <label class="form-check-label" for="is_active">{{ form.is_active.label }}</label>#}
+{#            </div>#}
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">Сохранить</button>
                 <a href="{{ url_for('main.profile') }}" class="btn btn-secondary">Отмена</a>

@@ -19,7 +19,7 @@
             <li class="list-group-item"><strong>Имя клиента:</strong> {{ request.client_name }}</li>
             <li class="list-group-item"><strong>Телефон клиента:</strong> {{ request.client_phone }}</li>
             <li class="list-group-item"><strong>Статус:</strong> {{ request.status }}</li>
-            <li class="list-group-item"><strong>Текущий мастер:</strong> {{ master.username }}</li>
+            <li class="list-group-item"><strong>Текущий мастер:</strong> {{ request.current_master }}</li>
             <li class="list-group-item"><strong>Комментарий мастера:</strong> {{ request.master_comment }}</li>
             <li class="list-group-item"><strong>Активен:</strong> {{ 'Да' if request.is_active else 'Нет' }}</li>
             <li class="list-group-item"><strong>Завершено:</strong> {{ request.complete_at.strftime('%Y-%m-%d %H:%M:%S') if request.complete_at else 'Нет' }}</li>
@@ -27,6 +27,7 @@
         <div style="margin-top: 2%">
         <a href="{{ url_for('main.profile') }}" class="btn btn-secondary">Назад</a>
         <a href="{{ url_for('main.edit_repair_request', pk=request.id) }}" class="btn btn-primary">Редактировать</a>
+        <a href="{{ url_for('main.complete_repair_request', pk=request.id) }}" class="btn btn-success">Выполнить</a>
         </div>
         </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>

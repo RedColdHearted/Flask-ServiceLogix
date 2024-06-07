@@ -40,7 +40,7 @@ class RepairRequest(db.Model):
     __tablename__ = 'repair_requests'
 
     id = db.Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    request_date = db.Column(db.DateTime, default=datetime.utcnow)
+    request_date = db.Column(db.DateTime, default=lambda: datetime.utcnow().date())
     device_type = db.Column(db.String(50), nullable=False)
     device_model = db.Column(db.String(50), nullable=False)
     issue_description = db.Column(db.Text, nullable=False)
@@ -56,3 +56,11 @@ class RepairRequest(db.Model):
 
     def __repr__(self):
         return f'<RepairRequest {self.id}>'
+
+
+@db.event.listens_for(RepairRequest, 'after_insert')
+@db.event.listens_for(RepairRequest, 'after_update')
+@db.event.listens_for(RepairRequest, 'after_delete')
+def receive_after_change(mapper, connection, target):
+    from app import socketio
+    socketio.emit('update', {'message': 'заявки обновленны, перезагрузка страницы через 5 секунд...'})

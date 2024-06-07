@@ -75,6 +75,10 @@ def create_repair_request():
     if form.validate_on_submit():
         request_date = datetime.utcnow()
         request_date = request_date.replace(microsecond=0)
+        if not form.current_master.data:
+            flash('Вы не выбрали ремонтника', 'danger')
+            return redirect(url_for('main.profile'))
+
         repair_request = RepairRequest(
             request_date=request_date,
             device_type=form.device_type.data,
@@ -104,6 +108,7 @@ def edit_repair_request(pk):
         repair_request.device_type = form.device_type.data
         repair_request.device_model = form.device_model.data
         repair_request.issue_description = form.issue_description.data
+        repair_request.current_master = form.current_master.data
         repair_request.client_name = form.client_name.data
         repair_request.client_phone = form.client_phone.data
         repair_request.status = form.status.data
@@ -118,10 +123,29 @@ def edit_repair_request(pk):
 
 @login_required
 def info_repair_request(pk):
-    request = RepairRequest.query.get_or_404(str(pk))
-    master = User.query.get_or_404(str(request.current_master_id))
-    return render_template('request/request_ifno.html', request=request, master=master)
+    repair_request = RepairRequest.query.get_or_404(str(pk))
+    return render_template('request/request_ifno.html', request=repair_request)
 
+@login_required
+def complete_repair_request(pk):
+    repair_request = RepairRequest.query.get_or_404(str(pk))
+    complete_date = datetime.utcnow()
+    complete_date = complete_date.replace(microsecond=0)
+
+    repair_request.is_active = False
+    repair_request.complete_at = complete_date
+    db.session.commit()
+    # flash(f'Заявка на ремонт {repair_request.id} выполнена.', 'success')
+    return redirect(url_for('main.profile'))
+
+
+@login_required
+def delete_repair_request(pk):
+    repair_request = RepairRequest.query.get_or_404(str(pk))
+    db.session.delete(repair_request)
+    db.session.commit()
+
+    return redirect(url_for('main.profile'))
 
 @login_required
 def search_results():

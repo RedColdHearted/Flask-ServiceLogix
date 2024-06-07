@@ -21,8 +21,8 @@ class User(UserMixin, db.Model):
 
     repair_requests = db.relationship('RepairRequest', back_populates='current_master')
 
-    def __repr__(self):
-        return f'<User {self.username}>'
+    def __str__(self):
+        return f'{self.username}'
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

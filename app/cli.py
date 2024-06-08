@@ -1,12 +1,14 @@
-from werkzeug.security import generate_password_hash
-
+from app import bcrypt
 from app.models import User
+
 
 def get_info():
     username = input('Введите имя пользователя: ')
     email = input('Введите email: ')
-    hashed_password = generate_password_hash(input('Введите пароль: '))
+    hashed_password = bcrypt.generate_password_hash(input('Введите пароль: '))
+    hashed_password = bcrypt.generate_password_hash(hashed_password).decode('utf-8')
     return username, email, hashed_password
+
 
 def register_cli(app, db):
     @app.cli.command('create-admin')

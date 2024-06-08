@@ -2,11 +2,11 @@ from datetime import datetime
 
 from flask import render_template, flash, redirect, url_for
 from flask_login import login_user, current_user, logout_user, login_required
-from werkzeug.security import generate_password_hash
+
 
 from app.models import User, RepairRequest
 from app.forms import RegistrationForm, LoginForm, RepairRequestForm, SearchRepairRequestForm
-from app import db
+from app import db, bcrypt
 
 
 def get_errors(form):
@@ -22,6 +22,16 @@ def calc_work_time(obj):
 def home():
     return render_template('home/home.html')
 
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(username=form.username.data, email=form.email.data, password_hash=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        flash('Your account has been created! You are now able to log in', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
 
 def register():
     if current_user.is_authenticated:
@@ -29,8 +39,8 @@ def register():
 
     form = RegistrationForm()
     if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data)
-        user = User(username=form.username.data, email=form.email.data, password_hash=hashed_password, is_repairmain=True)
+        hashed_password = bcrypt.generate_password_hash(form.password.data)
+        user = User(username=form.username.data, email=form.email.data, password_hash=hashed_password, is_repairman=True)
         db.session.add(user)
         db.session.commit()
         flash('Your account has been created! You are now able to log in', 'success')
@@ -42,14 +52,17 @@ def register():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('main.profile'))
+
     form = LoginForm()
+
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user and user.check_password(form.password.data):
             login_user(user)
             return redirect(url_for('main.profile'))
         else:
-            flash('Invalid username or password.')
+            flash('Invalid username or password.', 'danger')
+
     return render_template('registration/login.html', form=form)
 
 
@@ -67,9 +80,11 @@ def profile():
     repairmans = User.query.filter_by(is_repairman=True).all()
 
     total_work_time = sum(item for item in map(calc_work_time, inactive_requests))
-    average_uptime_seconds = total_work_time / len(inactive_requests)
-    average_uptime_hours = round(float(average_uptime_seconds / 3600), 3)
-
+    if inactive_requests:
+        average_uptime_seconds = total_work_time / len(inactive_requests)
+        average_uptime_hours = round(float(average_uptime_seconds / 3600), 3)
+    else:
+        average_uptime_hours = 0
     return render_template('profile/profile.html',
                            active_requests=active_requests,
                            history=requests,

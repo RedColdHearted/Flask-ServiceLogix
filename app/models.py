@@ -1,12 +1,11 @@
 from datetime import datetime
 import uuid
 
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from flask_bcrypt import Bcrypt
 
-from app import db, login_manager
-
-from .schemas import RepairRequestStatus
+from app import db, login_manager, bcrypt
+from app.schemas import RepairRequestStatus
 
 
 class User(UserMixin, db.Model):
@@ -25,10 +24,11 @@ class User(UserMixin, db.Model):
         return f'{self.username}'
 
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
 
+    # Method to check password
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return bcrypt.check_password_hash(self.password_hash, password)
 
 
 @login_manager.user_loader

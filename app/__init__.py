@@ -12,7 +12,7 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 socketio = SocketIO()
-
+bcrypt = Bcrypt()
 
 def create_app():
     app = Flask(__name__, template_folder='templates', static_folder='static')
@@ -22,10 +22,10 @@ def create_app():
     db.init_app(app)
 
     login_manager.init_app(app)
-    bcrypt = Bcrypt(app)
     csrf = CSRFProtect(app)
     migrate = Migrate(app, db)
     socketio.init_app(app)
+    bcrypt.init_app(app)
 
     with app.app_context():
         # Регистрация блюпринтов

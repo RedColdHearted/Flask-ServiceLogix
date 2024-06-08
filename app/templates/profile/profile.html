@@ -10,21 +10,34 @@
 </head>
 <body>
     <div class="container my-5">
-        <a class="text-dark text-decoration-none" href="{{ url_for('main.home') }}"><h1 class="text-center">ServiceLogix</h1></a>
+        <div class="container my-3 d-flex align-items-center justify-content-between">
+            <div class="flex-grow-1 d-flex justify-content-center">
+                <a class="text-dark text-decoration-none" href="{{ url_for('main.home') }}">
+                    <h1 class="text-center m-0">ServiceLogix</h1>
+                </a>
+            </div>
+            <div>
+                <a class="btn btn-danger" href="{{ url_for('main.logout') }}" role="button">Выйти</a>
+            </div>
+        </div>
 
-        <!-- Панель навигации -->
         <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="lights-tab" data-bs-toggle="tab" href="#requests" role="tab">Заявки</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="traffic-tab" data-bs-toggle="tab" href="#history" role="tab">История</a>
-            </li>
-            {#<li class="nav-item ms-auto">#}
-            <li class="nav-item">
-            <a class="nav-link" id="connect-device-tab" data-bs-toggle="tab" href="#statistic" role="tab">Статистика</a>
-            </li>
-        </ul>
+           <li class="nav-item">
+               <a class="nav-link active" id="lights-tab" data-bs-toggle="tab" href="#requests" role="tab">Заявки</a>
+           </li>
+           <li class="nav-item">
+               <a class="nav-link" id="traffic-tab" data-bs-toggle="tab" href="#history" role="tab">История</a>
+           </li>
+
+           <li class="nav-item">
+               <a class="nav-link" id="connect-device-tab" data-bs-toggle="tab" href="#statistic" role="tab">Статистика</a>
+           </li>
+            {% if current_user.is_admin %}
+           <li class="nav-item ms-auto">
+               <a class="nav-link" href="{{ url_for('admin.index') }}" role="tab">Админ панель</a>
+           </li>
+           {% endif %}
+       </ul>
 
         <div class="tab-content mt-4">
             <!-- запросы -->
@@ -46,7 +59,6 @@
                     {% endif %}
                 {% endwith %}
                 <!-- Список запросов -->
-
                 <div class="d-flex justify-content-start my-3 flex-row">
                     <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#requestModal">Создать заявку</button>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#phoneSearchModal">Поиск по телефону</button>
@@ -153,16 +165,12 @@
                     <h4>Нет заявок</h4>
                     </div>
                 {% endif %}
-
-                <!-- Добавить другие элементы освещения здесь -->
                 </ul>
             </div>
 
-            <!-- Светофоры -->
+            <!-- история заявок -->
             <div class="tab-pane fade" id="history" role="tabpanel">
                 <h3>История заявок</h3>
-
-                <!-- Список светофоров -->
                 <ul class="list-group">
                     {% if history %}
                     <!-- история -->
@@ -173,7 +181,7 @@
                                 <span>Статус: {{ item.status }}</span>
                                 <span class="status">Дата создания: {{ item.request_date }}</span>
                                 <div>
-                                    <a href="{{ url_for('main.delete_repair_request', pk=item.id) }}" class="btn btn-danger btn-sm toggle-light">Удалить</a>
+                                    <a href="{{ url_for('main.info_repair_request', pk=item.id) }}" class="btn btn-dark btn-sm toggle-light">Подробнее</a>
                                 </div>
                             </li>
                         {% endfor %}
@@ -186,29 +194,48 @@
                 </ul>
             </div>
 
-            <!-- Камеры безопасности -->
+            <!-- статистика -->
             <div class="tab-pane fade" id="statistic" role="tabpanel">
                 <h3>Статистика работы отдела обслуживания</h3>
-                <!-- Список камер безопасности -->
                 <ul class="list-group">
-
-                    {% if cameras %}
-                        <!-- Кнопки для управления освещением -->
-                                <div class="d-flex justify-content-between my-3">
-
-                                    <button class="btn btn-success">Включить все</button>
-                                    <button class="btn btn-danger">Выключить все</button>
+                    {% if history %}
+                        <div class="container my-5">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <div class="card-icon text-primary mb-2">
+                                                <i class="bi bi-people-fill"></i>
+                                            </div>
+                                            <h5 class="card-title">Количество ремонтников</h5>
+                                            <p class="card-text">{{ repairmans | length }}</p>
+                                        </div>
+                                    </div>
                                 </div>
-                    <!-- Пример элемента камеры безопасности -->
-                        {% for camera in cameras %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Камера 1 <span class="status">{{ camera.status }}</span>
-                            <div>
-                                <button class="btn btn-primary btn-sm toggle-camera">Включить</button>
-                                <button class="btn btn-warning btn-sm toggle-camera">Выключить</button>
+                                <div class="col-md-4">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <div class="card-icon text-success mb-2">
+                                                <i class="bi bi-bar-chart-fill"></i>
+                                            </div>
+                                            <h5 class="card-title">Выполненых заявок</h5>
+                                            <p class="card-text">{{ inactive_requests | length }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <div class="card-icon text-danger mb-2">
+                                                <i class="bi bi-clock-fill"></i>
+                                            </div>
+                                            <h5 class="card-title">Среднее время выполнения заявки</h5>
+                                            <p class="card-text">{{ average_uptime_hours }} (Часы)</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </li>
-                        {% endfor %}
+                        </div>
                     {% else %}
                         <div style="margin: 10% auto">
                         <h4>Статистика отсутствует</h4>

@@ -15,6 +15,10 @@ def get_errors(form):
             flash(f"Ошибка в поле {getattr(form, field).label.text}: {error}", 'danger')
 
 
+def calc_work_time(obj):
+    return (obj.complete_at - obj.request_date).total_seconds()
+
+
 def home():
     return render_template('home/home.html')
 
@@ -59,13 +63,21 @@ def logout():
 def profile():
     requests = RepairRequest.query.all()
     active_requests = [item for item in filter(lambda x: x.is_active, requests)]
+    inactive_requests = [item for item in filter(lambda x: not x.is_active, requests)]
     repairmans = User.query.filter_by(is_repairman=True).all()
+
+    total_work_time = sum(item for item in map(calc_work_time, inactive_requests))
+    average_uptime_seconds = total_work_time / len(inactive_requests)
+    average_uptime_hours = round(float(average_uptime_seconds / 3600), 3)
+
     return render_template('profile/profile.html',
                            active_requests=active_requests,
                            history=requests,
+                           inactive_requests=inactive_requests,
                            repairmans=repairmans,
                            create_request_form=RepairRequestForm(current_user),
                            search_request_form=SearchRepairRequestForm(),
+                           average_uptime_hours=average_uptime_hours,
                            )
 
 
@@ -138,14 +150,6 @@ def complete_repair_request(pk):
     # flash(f'Заявка на ремонт {repair_request.id} выполнена.', 'success')
     return redirect(url_for('main.profile'))
 
-
-@login_required
-def delete_repair_request(pk):
-    repair_request = RepairRequest.query.get_or_404(str(pk))
-    db.session.delete(repair_request)
-    db.session.commit()
-
-    return redirect(url_for('main.profile'))
 
 @login_required
 def search_results():

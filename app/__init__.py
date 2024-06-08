@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_login import LoginManager
 from flask_socketio import SocketIO
-
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
@@ -13,6 +12,7 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 socketio = SocketIO()
+
 
 def create_app():
     app = Flask(__name__, template_folder='templates', static_folder='static')

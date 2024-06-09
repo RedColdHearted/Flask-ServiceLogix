@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 
 from flask_login import UserMixin
@@ -40,7 +40,7 @@ class RepairRequest(db.Model):
     __tablename__ = 'repair_requests'
 
     id = db.Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    request_date = db.Column(db.DateTime, default=lambda: datetime.utcnow().date())
+    request_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc).date())
     device_type = db.Column(db.String(50), nullable=False)
     device_model = db.Column(db.String(50), nullable=False)
     issue_description = db.Column(db.Text, nullable=False)

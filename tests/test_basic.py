@@ -38,7 +38,8 @@ class UserLoginTestCase(unittest.TestCase):
     def create_test_users(self):
         """Создание пользователей для тестирования"""
         hashed_password = bcrypt.generate_password_hash('testpassword').decode('utf-8')
-        self.repairman = User(username='repairman', email='repairman@example.com', password_hash=hashed_password, is_repairman=True)
+        self.repairman = User(username='repairman', email='repairman@example.com', password_hash=hashed_password,
+                              is_repairman=True)
         self.admin = User(username='adminuser', email='admin@example.com', password_hash=hashed_password, is_admin=True)
         db.session.add(self.repairman)
         db.session.add(self.admin)
@@ -136,7 +137,6 @@ class UserLoginTestCase(unittest.TestCase):
             self.assertEqual(repair_request_response.status_code, 200)
             logout_user()
 
-
     def test_get_repair_request(self):
         """Тест доступа к странице заявки"""
         with self.client:
@@ -201,7 +201,6 @@ class UserLoginTestCase(unittest.TestCase):
     def test_admin_access_to_admin(self):
         """Тест доступа к админ странице администратором"""
         with self.client:
-
             self.login_as_user('adminuser', 'testpassword')
             self.assertTrue(current_user.is_authenticated)
             self.assertEqual(current_user.username, 'adminuser')

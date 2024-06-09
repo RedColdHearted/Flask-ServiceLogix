@@ -1,6 +1,7 @@
-from datetime import datetime
+import uuid
+from datetime import datetime, timezone
 
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, abort
 from flask_login import login_user, current_user, logout_user, login_required
 
 from app.models import User, RepairRequest
@@ -18,8 +19,16 @@ def calc_work_time(obj):
     return (obj.complete_at - obj.request_date).total_seconds()
 
 
+def get_object(model: db.Model, pk: uuid.uuid4):
+    response = db.session.get(model, str(pk))
+    if not response:
+        abort(404)
+    return response
+
+
 def home():
     return render_template('home/home.html')
+
 
 def register():
     form = RegistrationForm()
@@ -29,22 +38,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash('Your account has been created! You are now able to log in', 'success')
-        return redirect(url_for('login'))
-    return render_template('register.html', title='Register', form=form)
-
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.profile'))
-
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data)
-        user = User(username=form.username.data, email=form.email.data, password_hash=hashed_password, is_repairman=True)
-        db.session.add(user)
-        db.session.commit()
-        flash('Your account has been created! You are now able to log in', 'success')
         return redirect(url_for('main.login'))
-
     return render_template('registration/register.html', title='Register', form=form)
 
 
@@ -127,7 +121,9 @@ def create_repair_request():
 
 @login_required
 def edit_repair_request(pk):
-    repair_request = RepairRequest.query.get_or_404(str(pk))
+    repair_request = get_object(RepairRequest, pk)
+    if not repair_request.is_active:
+        abort(404)
     form = RepairRequestForm(current_user, obj=repair_request)
 
     if form.validate_on_submit():
@@ -149,14 +145,13 @@ def edit_repair_request(pk):
 
 @login_required
 def info_repair_request(pk):
-    repair_request = RepairRequest.query.get_or_404(str(pk))
+    repair_request = get_object(RepairRequest, pk)
     return render_template('request/request_ifno.html', request=repair_request)
 
 @login_required
 def complete_repair_request(pk):
-    repair_request = RepairRequest.query.get_or_404(str(pk))
-    complete_date = datetime.utcnow()
-    complete_date = complete_date.replace(microsecond=0)
+    repair_request = get_object(RepairRequest, pk)
+    complete_date = datetime.now().replace(microsecond=0)
 
     repair_request.is_active = False
     repair_request.complete_at = complete_date

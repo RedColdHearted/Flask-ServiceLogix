@@ -1,5 +1,7 @@
 import unittest
+
 from flask_login import current_user, logout_user
+
 from app import create_app, db, bcrypt
 from app.models import User, RepairRequest
 from app.schemas import RepairRequestStatus

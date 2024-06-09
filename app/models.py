@@ -2,7 +2,6 @@ from datetime import datetime, timezone
 import uuid
 
 from flask_login import UserMixin
-from flask_bcrypt import Bcrypt
 
 from app import db, login_manager, bcrypt
 from app.schemas import RepairRequestStatus

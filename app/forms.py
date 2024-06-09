@@ -32,7 +32,10 @@ class RegistrationForm(FlaskForm):
 
 class PhoneFormMixin:
     phone_pattern = r'^[\d\(\)\-\s]+$'  # Регулярное выражение для разрешенных символов в номере телефона
-    client_phone = StringField('Телефон клиента', validators=[DataRequired(), Length(max=20), Regexp(phone_pattern, message="Некорректный номер телефона")])
+    client_phone = StringField('Телефон клиента',
+                               validators=[DataRequired(), Length(max=20),
+                                           Regexp(phone_pattern, message="Некорректный номер телефона")]
+                               )
 
 
 class RepairRequestForm(FlaskForm, PhoneFormMixin):

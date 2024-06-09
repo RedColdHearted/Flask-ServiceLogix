@@ -3,10 +3,12 @@ from datetime import datetime
 from uuid import UUID
 from enum import Enum
 
+
 class RepairRequestStatus(Enum):
     NEW = "Новая заявка"
     IN_PROGRESS = "В процессе ремонта"
     COMPLETED = "Завершена"
+
 
 class RepairRequestCreate(BaseModel):
     device_type: str
@@ -15,8 +17,10 @@ class RepairRequestCreate(BaseModel):
     client_name: str
     client_phone: str
 
+
 class RepairRequestUpdateStatus(BaseModel):
     status: RepairRequestStatus
+
 
 class RepairRequestResponse(BaseModel):
     id: UUID

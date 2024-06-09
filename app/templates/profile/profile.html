@@ -175,6 +175,7 @@
                     {% if history %}
                     <!-- история -->
                         {% for item in history %}
+                            {% if not item.is_active %}
                             <li class="list-group-item d-flex justify-content-between align-items-center" style="">
                                 <span style="font-size: 10px; color: gray;">{{ item.id }}</span>
                                 <span>Тип: {{ item.device_type }}</span>
@@ -184,6 +185,7 @@
                                     <a href="{{ url_for('main.info_repair_request', pk=item.id) }}" class="btn btn-dark btn-sm toggle-light">Подробнее</a>
                                 </div>
                             </li>
+                            {% endif %}
                         {% endfor %}
                     {% else %}
                         <div style="margin: 10% auto">

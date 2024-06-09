@@ -10,15 +10,16 @@ from app.admin import create_admin
 
 db = SQLAlchemy()
 login_manager = LoginManager()
-login_manager.login_view = 'auth.login'
+login_manager.login_view = 'main.login'
 socketio = SocketIO()
 bcrypt = Bcrypt()
 
-def create_app():
+
+def create_app(config='config.Config'):
     app = Flask(__name__, template_folder='templates', static_folder='static')
 
     # Настройка конфигурации
-    app.config.from_object('config.Config')
+    app.config.from_object(config)
     db.init_app(app)
 
     login_manager.init_app(app)

@@ -24,7 +24,7 @@ COPY . /app/
 ENV PYTHONUNBUFFERED=1
 
 # Открываем порт 5000 для доступа к приложению
-EXPOSE 5000
+# EXPOSE 5000
 
 # Команда запускается при старте контейнера
-CMD ["python", "run.py"]
+CMD ["gunicorn", "app:create_app()"]

@@ -147,6 +147,7 @@ def info_repair_request(pk):
     repair_request = get_object(RepairRequest, pk)
     return render_template('request/request_ifno.html', request=repair_request)
 
+
 @login_required
 def complete_repair_request(pk):
     repair_request = get_object(RepairRequest, pk)
@@ -171,5 +172,5 @@ def search_results():
         else:
             flash(f'Контакт с номером телефона {phone} не найден.', 'danger')
             return redirect(url_for('main.profile'))
-    flash(f'Неверный формат номера телефона', 'danger')
+    flash('Неверный формат номера телефона', 'danger')
     return redirect(url_for('main.profile'))

@@ -23,11 +23,8 @@ COPY . /app/
 # Устанавливаем переменные окружения для Flask
 ENV PYTHONUNBUFFERED=1
 
-# Make wait-for-it.sh executable
-RUN chmod +x wait-for-it.sh
-
-# Открываем порт 8000 для доступа к приложению
-EXPOSE 8000
+# Открываем порт 5000 для доступа к приложению
+EXPOSE 5000
 
 # Команда запускается при старте контейнера
 CMD ["python", "run.py"]

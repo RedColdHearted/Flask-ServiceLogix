@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:13-alpine
@@ -14,7 +12,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: bash -c "./wait-for-it.sh db:5432 --timeout=60 --strict -- flask db upgrade"
+    command: bash -c "./wait-for-it.sh db:5432 --timeout=60 --strict -- flask db init && flask db migrate && flask db upgrade"
     volumes:
       - .:/app
     env_file:
@@ -32,6 +30,18 @@ services:
     volumes:
       - .:/app
     ports:
-      - "8001:8000"  # Измененный порт для избежания конфликта
+      - "5000:5000"
     env_file:
-      - .
+      - .env
+    depends_on:
+      - db
+      - migrate
+    networks:
+      - flask_network
+
+volumes:
+  postgres_data:
+
+networks:
+  flask_network:
+    driver: bridge

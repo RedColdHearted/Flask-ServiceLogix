@@ -94,7 +94,6 @@ def create_repair_request():
     form = RepairRequestForm(current_user)
     if form.validate_on_submit():
         request_date = datetime.now().date()
-        request_date = request_date.replace(microsecond=0)
         if not form.current_master.data:
             flash('Вы не выбрали ремонтника', 'danger')
             return redirect(url_for('main.profile'))

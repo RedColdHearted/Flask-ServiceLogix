@@ -3,3 +3,4 @@ venv
 instance
 migrations
 __pycache__
+.github

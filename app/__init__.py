@@ -21,7 +21,6 @@ def create_app(config='config.Config'):
     # Настройка конфигурации
     app.config.from_object(config)
     db.init_app(app)
-
     login_manager.init_app(app)
     csrf = CSRFProtect(app)
     migrate = Migrate(app, db)
@@ -30,7 +29,6 @@ def create_app(config='config.Config'):
 
     with app.app_context():
         # Регистрация блюпринтов
-
         from .main.errors import errors as errors_blueprint
         app.register_blueprint(errors_blueprint)
 

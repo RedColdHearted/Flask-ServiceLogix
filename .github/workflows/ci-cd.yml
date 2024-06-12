@@ -85,6 +85,6 @@ jobs:
 
       - name: Deploy to Railway
         run: |
-          RAILWAY_TOKEN=$RAILWAY_DEPLOY_TOKEN railway up
+          RAILWAY_TOKEN=$RAILWAY_DEPLOY_TOKEN railway up --service Flask-ServiceLogix
         env:
           RAILWAY_DEPLOY_TOKEN: ${{ secrets.RAILWAY_DEPLOY_TOKEN }}

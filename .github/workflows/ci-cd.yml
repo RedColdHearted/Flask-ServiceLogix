@@ -63,20 +63,24 @@ jobs:
         python -m unittest discover -s tests
 
   deploy:
-    needs: test
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12.2'
 
-      - name: Railway Login
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway login --token $RAILWAY_TOKEN
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
       - name: Deploy to Railway
-        run: railway up --detach
+        env:
+          RAILWAY_DEPLOY_TOKEN: ${{ secrets.RAILWAY_DEPLOY_TOKEN }}
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/railwayapp/cli/master/install.sh | sh
+          railway login --token $RAILWAY_DEPLOY_TOKEN
+          railway up

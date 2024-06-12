@@ -5,11 +5,12 @@ on:
     branches:
       - main
     paths:
-      - 'app/*'
+      - 'app/views.py'
       - 'run.py'
       - 'config.py'
       - 'tests/*'
       - 'requirements.txt'
+      - '.github/workflows/ci-cd.yml'
   pull_request:
     branches:
       - main

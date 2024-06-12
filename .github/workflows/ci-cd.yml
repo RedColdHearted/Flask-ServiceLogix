@@ -85,7 +85,6 @@ jobs:
 
       - name: Deploy to Railway
         run: |
-          $RAILWAY_DEPLOY_TOKEN
           RAILWAY_TOKEN=$RAILWAY_DEPLOY_TOKEN railway up
         env:
           RAILWAY_DEPLOY_TOKEN: ${{ secrets.RAILWAY_DEPLOY_TOKEN }}

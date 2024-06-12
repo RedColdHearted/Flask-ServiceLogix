@@ -39,7 +39,16 @@ cd Flask-ServiceLogix
 pip install -r requirements.txt
 ```
 
-4. Инициализируйте и настроите базу данных:
+3. при подключении postgresql укажите секреты в .env файле:
+
+```env
+POSTGRES_DB=your_db
+POSTGRES_USER=your_user
+POSTGRES_PASSWORD=your_password
+DATABASE_URL=postgresql://your_user:your_password@db:5432/your_db
+```
+
+5. Инициализируйте и настроите базу данных:
 
 ```bash
 flask db init
@@ -47,7 +56,7 @@ flask db migrate
 flask db upgrade
 ```
 
-5. Запустите приложение:
+6. Запустите приложение:
 
 ```bash
 flask run.py

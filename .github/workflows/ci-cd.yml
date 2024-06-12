@@ -37,6 +37,7 @@ jobs:
         flake8 .
 
   test:
+    needs: lint
     runs-on: ubuntu-latest
 
     env:
@@ -69,7 +70,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install Railway CLI
-        run: npm install -g railway
+        run: npm install -g @railway/cli
 
       - name: Railway Login
         env:

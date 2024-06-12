@@ -45,9 +45,7 @@ def register():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('main.profile'))
-
     form = LoginForm()
-
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user and user.check_password(form.password.data):
@@ -55,7 +53,6 @@ def login():
             return redirect(url_for('main.profile'))
         else:
             flash('Invalid username or password.', 'danger')
-
     return render_template('registration/login.html', form=form)
 
 
@@ -71,7 +68,6 @@ def profile():
     active_requests = [item for item in filter(lambda x: x.is_active, requests)]
     inactive_requests = [item for item in filter(lambda x: not x.is_active, requests)]
     repairmans = User.query.filter_by(is_repairman=True).all()
-
     total_work_time = sum(item for item in map(calc_work_time, inactive_requests))
     if inactive_requests:
         average_uptime_seconds = total_work_time / len(inactive_requests)

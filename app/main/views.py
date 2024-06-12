@@ -156,7 +156,6 @@ def complete_repair_request(pk):
     repair_request.is_active = False
     repair_request.complete_at = complete_date
     db.session.commit()
-    # flash(f'Заявка на ремонт {repair_request.id} выполнена.', 'success')
     return redirect(url_for('main.profile'))
 
 

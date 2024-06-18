@@ -82,7 +82,7 @@ flask db upgrade
 8. Запустите приложение:
 
 ```bash
-flask run.py
+python run.py
 ```
 
 Теперь приложение доступно по адресу `http://127.0.0.1:5000/`.

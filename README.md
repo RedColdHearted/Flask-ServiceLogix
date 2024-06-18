@@ -45,7 +45,7 @@ pip install -r requirements.txt
 POSTGRES_DB=your_db
 POSTGRES_USER=your_user
 POSTGRES_PASSWORD=your_password
-# если вы используете postgresql то укажите postgresql+psycopg2://пользователь:пароль@адрес/БД
+# если вы используете postgresql то укажите postgresql+psycopg2://пользователь:пароль@адрес/имя_БД
 # или закомиентируйте DATABASE_URL для использования sqlite
 DATABASE_URL=postgresql+psycopg2://your_user:your_password@db:5432/your_db
 ```

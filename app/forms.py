@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, PasswordField, SubmitField, BooleanField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length, Regexp
-from .models import User
-from .schemas import RepairRequestStatus
+from app.database.models import User
+from app.database.schemas import RepairRequestStatus
 
 
 class LoginForm(FlaskForm):

@@ -1,5 +1,5 @@
 from app import bcrypt
-from app.models import User
+from app.database.models import User
 
 
 def get_info():

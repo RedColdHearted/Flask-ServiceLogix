@@ -32,10 +32,15 @@ def create_app(config='config.Config'):
         from .main.errors import errors as errors_blueprint
         app.register_blueprint(errors_blueprint)
 
-        # Дополнительная инициализация, если требуется
+        # Регистрация роутов
         from .routes import register_routes
         register_routes(app, db)
 
+        # Регистрация слушателей db
+        from app.database.db_events import register_events
+        register_events(db)
+
+        # Регистрация cli
         from app.cli import register_cli
         register_cli(app, db)
 

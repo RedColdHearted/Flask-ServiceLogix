@@ -4,7 +4,7 @@ from datetime import datetime
 from flask import render_template, flash, redirect, url_for, abort
 from flask_login import login_user, current_user, logout_user, login_required
 
-from app.models import User, RepairRequest
+from app.database.models import User, RepairRequest
 from app.forms import RegistrationForm, LoginForm, RepairRequestForm, SearchRepairRequestForm
 from app import db, bcrypt
 

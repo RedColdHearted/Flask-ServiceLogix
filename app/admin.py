@@ -37,7 +37,7 @@ class RequestModelView(ModelView):
 
 def create_admin(app):
     admin = Admin(app, index_view=MyAdminIndexView(), template_mode='bootstrap4')
-    from .models import db, User, RepairRequest
+    from app.database.models import db, User, RepairRequest
     admin.add_view(UserModelView(User, db.session))
     admin.add_view(RequestModelView(RepairRequest, db.session))
     return admin

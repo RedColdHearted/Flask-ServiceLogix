@@ -45,9 +45,11 @@ pip install -r requirements.txt
 POSTGRES_DB=your_db
 POSTGRES_USER=your_user
 POSTGRES_PASSWORD=your_password
+
 # если вы используете postgresql то укажите postgresql+psycopg2://пользователь:пароль@адрес/имя_БД
 # или закомиентируйте DATABASE_URL для использования sqlite
-DATABASE_URL=postgresql+psycopg2://your_user:your_password@db:5432/your_db
+DATABASE_URL=postgresql+psycopg2://your_user:your_password@localhost:5432/your_db
+# @localhost для работы вне docker-compose, @db для docker-compose
 ```
 
 5. Инициализируйте и настроите базу данных:

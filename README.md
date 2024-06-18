@@ -33,13 +33,32 @@ git clone https://github.com/RedColdHearted/Flask-ServiceLogix
 cd Flask-ServiceLogix
 ```
 
-3. Установите необходимые зависимости:
+3. Создайте виртуальное окружение:
+
+```bash
+python3 -m venv venv
+```
+
+
+4. Активируйте виртуальное окружение:
+
+на windows:
+```bash
+venv/Scripts/activate
+```
+на linux:
+```bash
+source venv/bin/activate
+```
+
+
+5. Установите необходимые зависимости:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-3. при подключении postgresql укажите секреты в .env файле:
+6. при подключении postgresql укажите секреты в .env файле:
 
 ```env
 POSTGRES_DB=your_db
@@ -52,7 +71,7 @@ DATABASE_URL=postgresql+psycopg2://your_user:your_password@localhost:5432/your_d
 # @localhost для работы вне docker-compose, @db для docker-compose
 ```
 
-5. Инициализируйте и настроите базу данных:
+7. Инициализируйте и настроите базу данных:
 
 ```bash
 flask db init
@@ -60,7 +79,7 @@ flask db migrate
 flask db upgrade
 ```
 
-6. Запустите приложение:
+8. Запустите приложение:
 
 ```bash
 flask run.py

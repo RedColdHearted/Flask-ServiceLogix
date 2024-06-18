@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'app/views.py'
+      - 'app/main/views.py'
       - 'run.py'
       - 'config.py'
       - 'tests/*'

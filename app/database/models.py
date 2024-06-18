@@ -4,7 +4,7 @@ import uuid
 from flask_login import UserMixin
 
 from app import db, login_manager, bcrypt
-from app.schemas import RepairRequestStatus
+from app.database.schemas import RepairRequestStatus
 
 
 class User(UserMixin, db.Model):
@@ -55,11 +55,3 @@ class RepairRequest(db.Model):
 
     def __repr__(self):
         return f'<RepairRequest {self.id}>'
-
-
-@db.event.listens_for(RepairRequest, 'after_insert')
-@db.event.listens_for(RepairRequest, 'after_update')
-@db.event.listens_for(RepairRequest, 'after_delete')
-def receive_after_change(mapper, connection, target):
-    from app import socketio
-    socketio.emit('update', {'message': 'заявки обновленны, перезагрузка страницы через 5 секунд...'})

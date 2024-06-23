@@ -91,6 +91,7 @@ def profile():
                            average_uptime_hours=average_uptime_hours,
                            )
 
+
 def new_repair_request(request_date, form):
     return RepairRequest(
         request_date=request_date,

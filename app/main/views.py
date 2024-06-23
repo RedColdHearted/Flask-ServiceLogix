@@ -16,6 +16,8 @@ def get_errors(form):
 
 
 def calc_work_time(obj):
+    if obj.complete_at is None or obj.request_date is None:
+        return 0
     return (obj.complete_at - obj.request_date).total_seconds()
 
 
@@ -89,6 +91,19 @@ def profile():
                            average_uptime_hours=average_uptime_hours,
                            )
 
+def new_repair_request(request_date, form):
+    return RepairRequest(
+        request_date=request_date,
+        device_type=form.device_type.data,
+        device_model=form.device_model.data,
+        issue_description=form.issue_description.data,
+        client_name=form.client_name.data,
+        client_phone=form.client_phone.data,
+        status=form.status.data,
+        # is_active=form.is_active.data,
+        current_master_id=form.current_master.data
+    )
+
 
 @login_required
 def create_repair_request():
@@ -99,17 +114,7 @@ def create_repair_request():
             flash('Вы не выбрали ремонтника', 'danger')
             return redirect(url_for('main.profile'))
 
-        repair_request = RepairRequest(
-            request_date=request_date,
-            device_type=form.device_type.data,
-            device_model=form.device_model.data,
-            issue_description=form.issue_description.data,
-            client_name=form.client_name.data,
-            client_phone=form.client_phone.data,
-            status=form.status.data,
-            # is_active=form.is_active.data,
-            current_master_id=form.current_master.data
-        )
+        repair_request = new_repair_request(request_date, form)
         db.session.add(repair_request)
         db.session.commit()
         flash('Запрос на ремонт создан', 'success')
@@ -130,12 +135,24 @@ def edit_repair_request(pk):
         repair_request.device_type = form.device_type.data
         repair_request.device_model = form.device_model.data
         repair_request.issue_description = form.issue_description.data
-        repair_request.current_master = form.current_master.data
         repair_request.client_name = form.client_name.data
         repair_request.client_phone = form.client_phone.data
         repair_request.status = form.status.data
         repair_request.master_comment = form.master_comment.data
         repair_request.is_active = form.is_active.data
+
+        current_master_id = form.current_master.data
+        current_master = User.query.get(current_master_id)
+        if current_master is None:
+            flash('Выбран недействительный мастер.', 'danger')
+            return redirect(url_for('main.edit_repair_request', pk=pk))
+        repair_request.current_master = current_master
+
+        request_date = datetime.now().date()
+        repair_request = new_repair_request(request_date, form)
+
+        if not repair_request.status.endswith("COMPLETED"):
+            db.session.add(repair_request)
 
         db.session.commit()
         return redirect(url_for('main.profile'))

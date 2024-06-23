@@ -4,3 +4,4 @@ instance
 migrations
 __pycache__
 .github
+app/__pycache__/

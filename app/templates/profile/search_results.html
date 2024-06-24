@@ -19,10 +19,16 @@
                             <span>Клиент: {{ result.client_name }}</span>
                             <span>Номер телефона: {{ result.client_phone }}</span>
                             <span class="status">Устройство: {{ result.device_model }}</span>
+                            {% if result.status == result.status.COMPLETED %}
                             <div>
+                                <a href="{{ url_for('main.info_repair_request', pk=result.id) }}" class="btn btn-dark btn-sm toggle-light">Подробнее</a>
+                            </div>
+                            {% else: %}
+                             <div>
                                 <a href="{{ url_for('main.info_repair_request', pk=result.id) }}" class="btn btn-dark btn-sm toggle-light">Подробнее</a>
                                 <a href="{{ url_for('main.edit_repair_request', pk=result.id) }}" class="btn btn-primary btn-sm toggle-light">Изменить</a>
                             </div>
+                            {% endif %}
                         </li>
                         {% endfor %}
                     </ul>

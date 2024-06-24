@@ -4,13 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'app/main/views.py'
-      - 'run.py'
-      - 'config.py'
-      - 'tests/*'
-      - 'requirements.txt'
-      - '.github/workflows/ci-cd.yml'
   pull_request:
     branches:
       - main

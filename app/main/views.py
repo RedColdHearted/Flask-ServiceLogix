@@ -5,6 +5,7 @@ from flask import render_template, flash, redirect, url_for, abort
 from flask_login import login_user, current_user, logout_user, login_required
 
 from app.database.models import User, RepairRequest
+from app.database.schemas import RepairRequestStatus
 from app.forms import RegistrationForm, LoginForm, RepairRequestForm, SearchRepairRequestForm
 from app import db, bcrypt
 
@@ -173,6 +174,7 @@ def complete_repair_request(pk):
     complete_date = datetime.now().replace(microsecond=0)
 
     repair_request.is_active = False
+    repair_request.status = RepairRequestStatus.COMPLETED
     repair_request.complete_at = complete_date
     db.session.commit()
     return redirect(url_for('main.profile'))
@@ -185,6 +187,8 @@ def search_results():
         phone = form.client_phone.data
         search_term = f"%{phone}%"
         results = RepairRequest.query.filter(RepairRequest.client_phone.like(search_term)).all()
+        for item in results:
+            print(item.status)
         if results:
             return render_template('profile/search_results.html', results=results, phone=phone)
         else:
